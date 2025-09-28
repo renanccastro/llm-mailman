@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@ai-dev/shared/*": ["packages/shared/src/*"],
+      "@ai-dev/database/*": ["packages/database/src/*"],
+      "@ai-dev/auth-service/*": ["packages/auth-service/src/*"],
+      "@ai-dev/container-service/*": ["packages/container-service/src/*"],
+      "@ai-dev/communication-service/*": ["packages/communication-service/src/*"],
+      "@ai-dev/ai-service/*": ["packages/ai-service/src/*"]
+    }
+  }
+}
