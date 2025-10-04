@@ -407,7 +407,7 @@ export class ContextManager {
     return fileContents;
   }
 
-  private isCacheValid(context: AIContext): boolean {
+  private isCacheValid(_context: AIContext): boolean {
     // For now, always rebuild context to ensure freshness
     // In a production system, you might cache based on file modification times
     return false;
@@ -417,7 +417,9 @@ export class ContextManager {
     // Implement LRU cache
     if (this.contextCache.size >= this.maxCacheSize) {
       const firstKey = this.contextCache.keys().next().value;
-      this.contextCache.delete(firstKey);
+      if (firstKey) {
+        this.contextCache.delete(firstKey);
+      }
     }
 
     this.contextCache.set(key, {

@@ -208,7 +208,7 @@ export class ContainerUtils {
     };
   }
 
-  static generateWorkingDirectory(userId: string, project?: string): string {
+  static generateWorkingDirectory(_userId: string, project?: string): string {
     if (project) {
       return `/workspace/projects/${project}`;
     }

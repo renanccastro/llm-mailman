@@ -13,16 +13,17 @@ export interface AuthenticatedRequest extends Request {
   };
 }
 
-export function authenticateToken(req: Request, res: Response, next: NextFunction) {
+export function authenticateToken(req: Request, res: Response, next: NextFunction): void {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
 
   if (!token) {
-    return res.status(401).json<ApiResponse>({
+    res.status(401).json({
       success: false,
       error: 'Access token is required',
       timestamp: new Date().toISOString(),
     });
+    return;
   }
 
   try {
@@ -30,11 +31,12 @@ export function authenticateToken(req: Request, res: Response, next: NextFunctio
     (req as AuthenticatedRequest).user = decoded;
     next();
   } catch (error) {
-    return res.status(403).json<ApiResponse>({
+    res.status(403).json({
       success: false,
       error: 'Invalid or expired token',
       timestamp: new Date().toISOString(),
     });
+    return;
   }
 }
 

@@ -1,5 +1,5 @@
 import { prisma, User, Session } from '@ai-dev/database';
-import { AuthenticationError, generateToken } from '@ai-dev/shared';
+import { AuthenticationError } from '@ai-dev/shared';
 import { JwtService } from './jwt-service';
 import { TotpService } from './totp-service';
 import { JwtTokens } from '../types';
@@ -36,7 +36,7 @@ export class AuthService {
 
   static async validateSession(token: string): Promise<User | null> {
     try {
-      const payload = JwtService.verifyAccessToken(token);
+      JwtService.verifyAccessToken(token);
 
       const session = await prisma.session.findUnique({
         where: { token },
@@ -61,7 +61,7 @@ export class AuthService {
 
   static async refreshSession(refreshToken: string): Promise<JwtTokens | null> {
     try {
-      const { userId } = JwtService.verifyRefreshToken(refreshToken);
+      JwtService.verifyRefreshToken(refreshToken);
 
       const session = await prisma.session.findUnique({
         where: { refreshToken },

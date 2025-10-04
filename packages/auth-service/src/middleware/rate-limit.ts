@@ -67,9 +67,9 @@ export const apiRateLimit = rateLimit({
   store: new RedisStore(Constants.RATE_LIMIT_WINDOW) as any,
   keyGenerator: (req: Request) => {
     // Use user ID if authenticated, otherwise use IP
-    return req.user?.id || req.ip || 'unknown';
+    return (req.user as any)?.id || req.ip || 'unknown';
   },
-  handler: (req: Request, res: Response) => {
+  handler: (_req: Request, _res: Response) => {
     throw new RateLimitError('Rate limit exceeded', 60);
   },
 });
@@ -97,7 +97,7 @@ export const requestCreationLimit = rateLimit({
   legacyHeaders: false,
   store: new RedisStore(60 * 60 * 1000, 'request-limit:') as any,
   keyGenerator: (req: Request) => {
-    return req.user?.id || req.ip || 'unknown';
+    return (req.user as any)?.id || req.ip || 'unknown';
   },
 });
 
@@ -112,7 +112,7 @@ export function customRateLimit(options: {
     windowMs = 15 * 60 * 1000,
     max = 10,
     keyPrefix = 'custom-limit:',
-    keyGenerator = (req) => req.user?.id || req.ip || 'unknown',
+    keyGenerator = (req) => (req.user as any)?.id || req.ip || 'unknown',
   } = options;
 
   return rateLimit({

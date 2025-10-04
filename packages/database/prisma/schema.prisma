@@ -46,124 +46,124 @@ enum ConfirmationType {
 }
 
 model User {
-  id              String    @id @default(cuid())
-  email           String    @unique
-  githubId        String    @unique
-  githubUsername  String    @unique
-  name            String?
-  avatarUrl       String?
-  role            UserRole  @default(USER)
+  id             String   @id @default(cuid())
+  email          String   @unique
+  githubId       String   @unique
+  githubUsername String   @unique
+  name           String?
+  avatarUrl      String?
+  role           UserRole @default(USER)
 
   // Private communication channels
-  privateEmail    String?   @unique // user123@aidev.platform
-  whatsappNumber  String?   @unique // Assigned WhatsApp number
+  privateEmail   String? @unique // user123@aidev.platform
+  whatsappNumber String? @unique // Assigned WhatsApp number
 
   // Security
-  ipWhitelist     String[]  @default([])
-  totpSecret      String?   // For 2FA if enabled
+  ipWhitelist      String[] @default([])
+  totpSecret       String? // For 2FA if enabled
   twoFactorEnabled Boolean  @default(false)
 
   // Preferences
-  yoloMode        Boolean   @default(false)
+  yoloMode            Boolean             @default(false)
   notificationChannel NotificationChannel @default(BOTH)
-  timezone        String    @default("UTC")
+  timezone            String              @default("UTC")
 
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  lastActiveAt    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  lastActiveAt DateTime?
 
   // Relations
-  apiTokens       ApiToken[]
-  containers      Container[]
-  repositories    Repository[]
-  requests        Request[]
-  confirmations   Confirmation[]
-  auditLogs       AuditLog[]
-  notifications   Notification[]
-  sessions        Session[]
-  pushSubscriptions PushSubscription[]
+  apiTokens            ApiToken[]
+  containers           Container[]
+  repositories         Repository[]
+  requests             Request[]
+  confirmations        Confirmation[]
+  auditLogs            AuditLog[]
+  notifications        Notification[]
+  sessions             Session[]
+  pushSubscriptions    PushSubscription[]
   notificationSettings NotificationSettings?
-  containerSessions ContainerSession[]
+  containerSessions    ContainerSession[]
 }
 
 model ApiToken {
-  id              String    @id @default(cuid())
-  userId          String
-  name            String    // e.g., "Anthropic", "OpenAI"
-  service         String    // e.g., "anthropic", "openai"
-  encryptedToken  String    // Encrypted API key
-  lastUsedAt      DateTime?
-  expiresAt       DateTime?
-  isActive        Boolean   @default(true)
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id             String    @id @default(cuid())
+  userId         String
+  name           String // e.g., "Anthropic", "OpenAI"
+  service        String // e.g., "anthropic", "openai"
+  encryptedToken String // Encrypted API key
+  lastUsedAt     DateTime?
+  expiresAt      DateTime?
+  isActive       Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, service])
   @@index([userId])
 }
 
 model Container {
-  id              String    @id @default(cuid())
-  userId          String    @unique
-  dockerId        String?   // Docker container ID
-  kubernetesName  String?   // K8s pod name
+  id             String  @id @default(cuid())
+  userId         String  @unique
+  dockerId       String? // Docker container ID
+  kubernetesName String? // K8s pod name
 
-  status          ContainerStatus @default(CREATING)
-  imageTag        String    @default("latest")
+  status   ContainerStatus @default(CREATING)
+  imageTag String          @default("latest")
 
   // Resource limits
-  memoryLimit     Int       @default(2048) // MB
-  cpuLimit        Float     @default(2.0)  // CPU cores
-  diskLimit       Int       @default(10240) // MB
+  memoryLimit Int   @default(2048) // MB
+  cpuLimit    Float @default(2.0) // CPU cores
+  diskLimit   Int   @default(10240) // MB
 
   // Networking
-  internalIp      String?
-  port            Int?
+  internalIp String?
+  port       Int?
 
   // Monitoring
   lastHealthCheck DateTime?
   healthStatus    String?
-  resourceUsage   Json?     // CPU, memory, disk usage metrics
+  resourceUsage   Json? // CPU, memory, disk usage metrics
 
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  startedAt       DateTime?
-  stoppedAt       DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  startedAt DateTime?
+  stoppedAt DateTime?
 
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
 
 model Repository {
-  id              String    @id @default(cuid())
-  userId          String
-  githubId        Int       @unique
-  fullName        String    // owner/repo
-  name            String
-  owner           String
-  private         Boolean
+  id       String  @id @default(cuid())
+  userId   String
+  githubId Int     @unique
+  fullName String // owner/repo
+  name     String
+  owner    String
+  private  Boolean
 
   // Permissions
-  canRead         Boolean   @default(true)
-  canWrite        Boolean   @default(false)
+  canRead           Boolean  @default(true)
+  canWrite          Boolean  @default(false)
   protectedBranches String[] @default(["main", "master", "develop", "staging"])
 
   // Metadata
-  defaultBranch   String    @default("main")
-  language        String?
-  description     String?
-  url             String
-  cloneUrl        String
+  defaultBranch String  @default("main")
+  language      String?
+  description   String?
+  url           String
+  cloneUrl      String
 
-  lastSyncedAt    DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  lastSyncedAt DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  requests        Request[]
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  requests Request[]
 
   @@unique([userId, githubId])
   @@index([userId])
@@ -171,51 +171,51 @@ model Repository {
 }
 
 model Request {
-  id              String    @id @default(cuid())
-  userId          String
+  id     String @id @default(cuid())
+  userId String
 
   // Request details
-  command         String    @db.Text
-  source          String    // Email address that sent the request
-  channel         NotificationChannel @default(EMAIL)
-  rawMessage      String?   @db.Text
-  parsedCommand   String?   @db.Text
-  attachments     Json?     // File attachments metadata
+  command       String              @db.Text
+  source        String // Email address that sent the request
+  channel       NotificationChannel @default(EMAIL)
+  rawMessage    String?             @db.Text
+  parsedCommand String?             @db.Text
+  attachments   Json? // File attachments metadata
 
   // Target
-  repositoryId    String?
-  targetBranch    String?
+  repositoryId String?
+  targetBranch String?
 
   // Status
-  status          RequestStatus @default(PENDING_CONFIRMATION)
-  confirmationRequired Boolean @default(true)
+  status               RequestStatus @default(PENDING_CONFIRMATION)
+  confirmationRequired Boolean       @default(true)
 
   // Confirmation system
-  confirmationToken String?  @unique
-  confirmedAt     DateTime?
-  expiresAt       DateTime?
-  emailFallbackSent Boolean @default(false)
+  confirmationToken String?   @unique
+  confirmedAt       DateTime?
+  expiresAt         DateTime?
+  emailFallbackSent Boolean   @default(false)
 
   // Execution
   executionStartedAt DateTime?
   executionEndedAt   DateTime?
-  completedAt     DateTime?
-  output          String?   @db.Text
-  error           String?   @db.Text
-  exitCode        Int?
-  sessionId       String?   // Tmux/Claude Code session ID
+  completedAt        DateTime?
+  output             String?   @db.Text
+  error              String?   @db.Text
+  exitCode           Int?
+  sessionId          String? // Tmux/Claude Code session ID
 
   // Metadata
-  sourceIp        String?
-  userAgent       String?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  sourceIp  String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  repository      Repository? @relation(fields: [repositoryId], references: [id])
-  confirmations   Confirmation[]
-  notifications   Notification[]
-  auditLogs       AuditLog[]
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  repository    Repository?    @relation(fields: [repositoryId], references: [id])
+  confirmations Confirmation[]
+  notifications Notification[]
+  auditLogs     AuditLog[]
 
   @@index([userId])
   @@index([status])
@@ -223,22 +223,22 @@ model Request {
 }
 
 model Confirmation {
-  id              String    @id @default(cuid())
-  userId          String
-  requestId       String
+  id        String @id @default(cuid())
+  userId    String
+  requestId String
 
-  type            ConfirmationType
-  token           String    @unique @default(cuid())
+  type  ConfirmationType
+  token String           @unique @default(cuid())
 
-  confirmed       Boolean   @default(false)
-  confirmedAt     DateTime?
-  confirmedBy     String?   // IP address or identifier
+  confirmed   Boolean   @default(false)
+  confirmedAt DateTime?
+  confirmedBy String? // IP address or identifier
 
-  expiresAt       DateTime
-  createdAt       DateTime  @default(now())
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  request         Request   @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  request Request @relation(fields: [requestId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([requestId])
@@ -247,27 +247,27 @@ model Confirmation {
 }
 
 model Notification {
-  id              String    @id @default(cuid())
-  userId          String
-  requestId       String?
+  id        String  @id @default(cuid())
+  userId    String
+  requestId String?
 
-  channel         NotificationChannel
-  type            String    // confirmation_required, execution_started, execution_completed, error
-  subject         String?
-  content         String    @db.Text
-  metadata        Json?
+  channel  NotificationChannel
+  type     String // confirmation_required, execution_started, execution_completed, error
+  subject  String?
+  content  String              @db.Text
+  metadata Json?
 
-  sent            Boolean   @default(false)
-  sentAt          DateTime?
-  delivered       Boolean   @default(false)
-  deliveredAt     DateTime?
-  failed          Boolean   @default(false)
-  failureReason   String?
+  sent          Boolean   @default(false)
+  sentAt        DateTime?
+  delivered     Boolean   @default(false)
+  deliveredAt   DateTime?
+  failed        Boolean   @default(false)
+  failureReason String?
 
-  createdAt       DateTime  @default(now())
+  createdAt DateTime @default(now())
 
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  request         Request?  @relation(fields: [requestId], references: [id])
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  request Request? @relation(fields: [requestId], references: [id])
 
   @@index([userId])
   @@index([requestId])
@@ -276,20 +276,20 @@ model Notification {
 }
 
 model AuditLog {
-  id              String    @id @default(cuid())
-  userId          String
-  requestId       String?
+  id        String  @id @default(cuid())
+  userId    String
+  requestId String?
 
-  action          String    // login, logout, request_created, request_confirmed, container_started, etc.
-  details         Json?
+  action  String // login, logout, request_created, request_confirmed, container_started, etc.
+  details Json?
 
-  ipAddress       String?
-  userAgent       String?
+  ipAddress String?
+  userAgent String?
 
-  createdAt       DateTime  @default(now())
+  createdAt DateTime @default(now())
 
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  request         Request?  @relation(fields: [requestId], references: [id])
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  request Request? @relation(fields: [requestId], references: [id])
 
   @@index([userId])
   @@index([action])
@@ -297,21 +297,21 @@ model AuditLog {
 }
 
 model Session {
-  id              String    @id @default(cuid())
-  userId          String
-  token           String    @unique
-  refreshToken    String    @unique
+  id           String @id @default(cuid())
+  userId       String
+  token        String @unique
+  refreshToken String @unique
 
-  ipAddress       String?
-  userAgent       String?
+  ipAddress String?
+  userAgent String?
 
-  expiresAt       DateTime
+  expiresAt        DateTime
   refreshExpiresAt DateTime
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  lastActivityAt  DateTime  @default(now())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  lastActivityAt   DateTime @default(now())
 
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([token])
@@ -320,19 +320,19 @@ model Session {
 }
 
 model PushSubscription {
-  id              String    @id @default(cuid())
-  userId          String
-  endpoint        String
-  p256dh          String
-  auth            String
-  isActive        Boolean   @default(true)
-  deviceName      String?
-  userAgent       String?
-  lastUsed        DateTime  @default(now())
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id         String   @id @default(cuid())
+  userId     String
+  endpoint   String
+  p256dh     String
+  auth       String
+  isActive   Boolean  @default(true)
+  deviceName String?
+  userAgent  String?
+  lastUsed   DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, endpoint])
   @@index([userId])
@@ -340,47 +340,47 @@ model PushSubscription {
 }
 
 model NotificationSettings {
-  id              String    @id @default(cuid())
-  userId          String    @unique
-  emailFallback   Boolean   @default(true)  // Send email if push fails
-  emailTimeout    Int       @default(5)     // Minutes before email fallback
-  autoCancel      Int       @default(15)    // Minutes before auto-cancel
-  pushEnabled     Boolean   @default(false)
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  emailFallback Boolean  @default(true) // Send email if push fails
+  emailTimeout  Int      @default(5) // Minutes before email fallback
+  autoCancel    Int      @default(15) // Minutes before auto-cancel
+  pushEnabled   Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
 
 model ContainerSession {
-  id              String    @id @default(cuid())
-  containerId     String    @unique
-  userId          String
-  threadId        String
-  repositoryId    String?
-  sessionId       String?   // Claude Code tmux session ID
+  id           String  @id @default(cuid())
+  containerId  String  @unique
+  userId       String
+  threadId     String
+  repositoryId String?
+  sessionId    String? // Claude Code tmux session ID
 
   // Status
-  isActive        Boolean   @default(true)
-  lastActivityAt  DateTime  @default(now())
+  isActive       Boolean  @default(true)
+  lastActivityAt DateTime @default(now())
 
   // Lifecycle
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  stoppedAt       DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  stoppedAt DateTime?
 
   // Resource usage
-  cpuUsage        Float?    // Percentage
-  memoryUsage     Int?      // MB
-  diskUsage       Int?      // MB
+  cpuUsage    Float? // Percentage
+  memoryUsage Int? // MB
+  diskUsage   Int? // MB
 
   // Metadata
-  commitHash      String?   // Last commit when saved
-  filesModified   Int?      // Number of files modified
+  commitHash    String? // Last commit when saved
+  filesModified Int? // Number of files modified
 
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([threadId])

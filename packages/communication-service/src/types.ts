@@ -107,3 +107,13 @@ export interface WhatsAppConfig {
   businessApiUrl?: string;
   useWebVersion?: boolean;
 }
+
+export interface NotificationMessage {
+  to: string;
+  channel: 'EMAIL' | 'WHATSAPP';
+  type: 'confirmation' | 'status_update' | 'error' | 'welcome' | 'completion';
+  subject?: string;
+  content: string;
+  data?: Record<string, any>;
+  metadata?: Record<string, any>;
+}

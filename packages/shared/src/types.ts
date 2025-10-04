@@ -31,24 +31,6 @@ export interface SessionData {
   role: 'USER' | 'ADMIN';
 }
 
-export interface CreateRequestDto {
-  channel: 'EMAIL' | 'WHATSAPP' | 'BOTH';
-  message: string;
-  repositoryId?: string;
-  attachments?: Array<{
-    filename: string;
-    mimetype: string;
-    size: number;
-    url?: string;
-  }>;
-}
-
-export interface ConfirmRequestDto {
-  requestId: string;
-  token: string;
-  confirmationType: 'EMAIL' | 'WHATSAPP';
-}
-
 export interface ContainerConfig {
   memoryLimit?: number;
   cpuLimit?: number;

@@ -39,7 +39,9 @@ export class CommandExecutor extends EventEmitter {
 
     // This would integrate with the container service
     // For now, we'll simulate command execution
-    const command = options.command.join(' ');
+    const command = Array.isArray(options.command)
+      ? options.command.join(' ')
+      : (options.command || '');
 
     // Emit execution started event
     this.emit('execution:started', {
@@ -92,14 +94,18 @@ export class CommandExecutor extends EventEmitter {
     stdout: string;
     stderr: string;
   }> {
-    const command = options.command.join(' ');
+    const commandArr = Array.isArray(options.command)
+      ? options.command
+      : (options.command || '').split(' ').filter(Boolean);
+    const command = commandArr.join(' ');
+    const firstArg = commandArr[0] || '';
 
     // Simulate some common commands for demonstration
-    switch (options.command[0]) {
+    switch (firstArg) {
       case 'echo':
         return {
           exitCode: 0,
-          stdout: options.command.slice(1).join(' ') + '\n',
+          stdout: commandArr.slice(1).join(' ') + '\n',
           stderr: '',
         };
 
@@ -125,7 +131,7 @@ export class CommandExecutor extends EventEmitter {
         };
 
       case 'node':
-        if (options.command.includes('--version')) {
+        if (commandArr.includes('--version')) {
           return {
             exitCode: 0,
             stdout: 'v20.11.0\n',
@@ -135,14 +141,14 @@ export class CommandExecutor extends EventEmitter {
         break;
 
       case 'npm':
-        if (options.command.includes('install')) {
+        if (commandArr.includes('install')) {
           return {
             exitCode: 0,
             stdout: 'added 120 packages in 15s\n',
             stderr: '',
           };
         }
-        if (options.command.includes('test')) {
+        if (commandArr.includes('test')) {
           return {
             exitCode: 0,
             stdout: 'All tests passed!\n✓ 25 tests completed\n',
@@ -152,7 +158,7 @@ export class CommandExecutor extends EventEmitter {
         break;
 
       case 'git':
-        if (options.command.includes('status')) {
+        if (commandArr.includes('status')) {
           return {
             exitCode: 0,
             stdout: 'On branch main\nnothing to commit, working tree clean\n',

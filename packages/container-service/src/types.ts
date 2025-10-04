@@ -9,6 +9,7 @@ export interface ContainerCreateOptions {
   workDir?: string;
   command?: string[];
   entrypoint?: string[];
+  labels?: Record<string, string>;
 }
 
 export interface VolumeMount {
@@ -75,6 +76,7 @@ export interface ExecResult {
   exitCode: number;
   stdout: string;
   stderr: string;
+  output?: string;
   duration: number;
 }
 

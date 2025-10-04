@@ -27,6 +27,7 @@
     "@types/nodemailer": "^6.4.14",
     "@types/mime-types": "^2.1.4",
     "@types/formidable": "^3.4.5",
+    "@types/qrcode-terminal": "^0.12.2",
     "@types/node": "^20.11.0",
     "typescript": "^5.3.0",
     "jest": "^29.7.0",

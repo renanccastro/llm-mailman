@@ -175,7 +175,7 @@ Host *
 
       // Create tar.gz backup
       const tar = await import('tar-stream');
-      const pack = tar.pack();
+      const _pack = tar.pack();
 
       // TODO: Implement actual tar creation
       // This is a simplified version - in production, use proper tar library
@@ -189,7 +189,7 @@ Host *
 
   async restoreWorkspace(userId: string, backupFile: string): Promise<void> {
     try {
-      const workspace = await this.createUserWorkspace(userId);
+      const _workspace = await this.createUserWorkspace(userId);
 
       // TODO: Implement tar extraction
       // This would extract the backup file to the workspace directory

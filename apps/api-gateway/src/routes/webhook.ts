@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { ApiResponse } from '@ai-dev/shared';
 
-export const webhookRouter = Router();
+export const webhookRouter: any = Router();
 
 // WhatsApp webhook verification
 webhookRouter.get('/whatsapp', async (req, res) => {

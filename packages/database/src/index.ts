@@ -1,4 +1,12 @@
-export { PrismaClient } from '@prisma/client';
+export {
+  PrismaClient,
+  ContainerStatus,
+  RequestStatus,
+  NotificationChannel,
+  ConfirmationType,
+  UserRole
+} from '@prisma/client';
+
 export type {
   User,
   ApiToken,
@@ -9,11 +17,6 @@ export type {
   Notification,
   AuditLog,
   Session,
-  UserRole,
-  ContainerStatus,
-  RequestStatus,
-  NotificationChannel,
-  ConfirmationType,
 } from '@prisma/client';
 
 export * from './client';

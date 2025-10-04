@@ -71,7 +71,7 @@ export interface FileNode {
 }
 
 export interface AIRequestOptions {
-  provider?: 'claude' | 'openai' | 'auto';
+  provider?: 'claude' | 'openai' | 'claude-code' | 'auto';
   model?: string;
   temperature?: number;
   maxTokens?: number;
@@ -115,11 +115,31 @@ export interface CommandAnalysis {
 export interface AIServiceConfig {
   claudeApiKey?: string;
   openaiApiKey?: string;
-  defaultProvider: 'claude' | 'openai' | 'auto';
+  defaultProvider: 'claude' | 'openai' | 'claude-code' | 'auto';
   maxConcurrentRequests: number;
   requestTimeout: number;
   enableStreaming: boolean;
   yoloModeDefault: boolean;
   maxTokensDefault: number;
   temperatureDefault: number;
+}
+
+export interface ExecOptions {
+  command?: string | string[];
+  containerId?: string;
+  workDir?: string;
+  cwd?: string;
+  env?: Record<string, string>;
+  timeout?: number;
+  shell?: string | boolean;
+  encoding?: BufferEncoding;
+  maxBuffer?: number;
+}
+
+export interface ExecResult {
+  stdout: string;
+  stderr: string;
+  output?: string; // Combined stdout/stderr or raw output
+  exitCode: number;
+  signal?: string;
 }

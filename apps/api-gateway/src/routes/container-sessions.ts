@@ -4,7 +4,7 @@ import { authenticateToken, AuthenticatedRequest } from '../middleware/auth';
 import { containerLifecycleManager } from '../services';
 import { prisma } from '@ai-dev/database';
 
-export const containerSessionRouter = Router();
+export const containerSessionRouter: any = Router();
 
 // Get active container sessions for user
 containerSessionRouter.get('/sessions', authenticateToken, async (req: AuthenticatedRequest, res) => {
@@ -42,7 +42,7 @@ containerSessionRouter.get('/sessions', authenticateToken, async (req: Authentic
       };
     });
 
-    res.json<ApiResponse>({
+    res.json({
       success: true,
       data: {
         sessions: enrichedSessions,
@@ -53,7 +53,7 @@ containerSessionRouter.get('/sessions', authenticateToken, async (req: Authentic
 
   } catch (error) {
     console.error('Get container sessions error:', error);
-    res.status(500).json<ApiResponse>({
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to get container sessions',
       timestamp: new Date().toISOString()
@@ -77,7 +77,7 @@ containerSessionRouter.post('/:containerId/cleanup', authenticateToken, async (r
     });
 
     if (!session) {
-      return res.status(404).json<ApiResponse>({
+      return res.status(404).json({
         success: false,
         error: 'Container not found or not owned by user',
         timestamp: new Date().toISOString()
@@ -87,7 +87,7 @@ containerSessionRouter.post('/:containerId/cleanup', authenticateToken, async (r
     // Force cleanup
     await containerLifecycleManager.forceCleanupThread(session.threadId);
 
-    res.json<ApiResponse>({
+    res.json({
       success: true,
       message: 'Container cleaned up successfully',
       timestamp: new Date().toISOString()
@@ -95,7 +95,7 @@ containerSessionRouter.post('/:containerId/cleanup', authenticateToken, async (r
 
   } catch (error) {
     console.error('Container cleanup error:', error);
-    res.status(500).json<ApiResponse>({
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to cleanup container',
       timestamp: new Date().toISOString()
@@ -119,7 +119,7 @@ containerSessionRouter.post('/:containerId/extend', authenticateToken, async (re
     });
 
     if (!session) {
-      return res.status(404).json<ApiResponse>({
+      return res.status(404).json({
         success: false,
         error: 'Container not found or not owned by user',
         timestamp: new Date().toISOString()
@@ -135,7 +135,7 @@ containerSessionRouter.post('/:containerId/extend', authenticateToken, async (re
       data: { lastActivityAt: new Date() }
     });
 
-    res.json<ApiResponse>({
+    res.json({
       success: true,
       message: 'Container lifetime extended by 45 minutes',
       timestamp: new Date().toISOString()
@@ -143,7 +143,7 @@ containerSessionRouter.post('/:containerId/extend', authenticateToken, async (re
 
   } catch (error) {
     console.error('Container extend error:', error);
-    res.status(500).json<ApiResponse>({
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to extend container lifetime',
       timestamp: new Date().toISOString()
@@ -156,7 +156,7 @@ containerSessionRouter.get('/stats', authenticateToken, async (req: Authenticate
   try {
     const stats = await containerLifecycleManager.getStatistics();
 
-    res.json<ApiResponse>({
+    res.json({
       success: true,
       data: stats,
       timestamp: new Date().toISOString()
@@ -164,7 +164,7 @@ containerSessionRouter.get('/stats', authenticateToken, async (req: Authenticate
 
   } catch (error) {
     console.error('Get container stats error:', error);
-    res.status(500).json<ApiResponse>({
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to get container statistics',
       timestamp: new Date().toISOString()

@@ -198,6 +198,7 @@ export class ClaudeCodeService extends EventEmitter implements AIProvider {
     const session: ClaudeCodeSession = {
       sessionId: tmuxSession.sessionId,
       userId,
+      containerId: '', // TODO: Integrate with container service
       workspaceRoot: tmuxSession.workspaceRoot,
       isActive: true,
       lastActivity: new Date(),
@@ -284,7 +285,7 @@ export class ClaudeCodeService extends EventEmitter implements AIProvider {
   async executeInSession(
     sessionId: string,
     command: string,
-    options?: {
+    _options?: {
       timeout?: number;
       yoloMode?: boolean;
     }

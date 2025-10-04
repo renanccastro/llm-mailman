@@ -12,7 +12,7 @@ export class AttachmentHandler {
   constructor() {
     this.uploadDir = process.env.UPLOAD_DIR || '/tmp/uploads';
     this.maxFileSize = Constants.MAX_FILE_SIZE;
-    this.allowedMimeTypes = Constants.ALLOWED_FILE_TYPES;
+    this.allowedMimeTypes = [...Constants.ALLOWED_FILE_TYPES];
   }
 
   async processAttachments(message: IncomingMessage): Promise<MessageAttachment[]> {

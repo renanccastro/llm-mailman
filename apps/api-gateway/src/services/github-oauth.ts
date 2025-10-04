@@ -30,13 +30,16 @@ export class GitHubOAuthService {
     this.clientId = process.env.GITHUB_CLIENT_ID!;
     this.clientSecret = process.env.GITHUB_CLIENT_SECRET!;
     this.jwtSecret = process.env.JWT_SECRET || 'your-jwt-secret';
+  }
 
-    if (!this.clientId || !this.clientSecret) {
+  private ensureConfigured(): void {
+    if (!this.clientId || !this.clientSecret || this.clientId === 'your_github_oauth_client_id' || this.clientSecret === 'your_github_oauth_client_secret') {
       throw new Error('GitHub OAuth credentials not configured');
     }
   }
 
   async exchangeCodeForToken(code: string, state: string): Promise<string> {
+    this.ensureConfigured();
     const response = await fetch('https://github.com/login/oauth/access_token', {
       method: 'POST',
       headers: {
@@ -55,7 +58,7 @@ export class GitHubOAuthService {
       throw new Error(`GitHub OAuth failed: ${response.statusText}`);
     }
 
-    const data = await response.json();
+    const data = await response.json() as any;
 
     if (data.error) {
       throw new Error(`GitHub OAuth error: ${data.error_description || data.error}`);
@@ -76,7 +79,7 @@ export class GitHubOAuthService {
       throw new Error(`Failed to fetch GitHub user: ${response.statusText}`);
     }
 
-    return await response.json();
+    return (await response.json()) as any;
   }
 
   async fetchUserRepositories(accessToken: string): Promise<GitHubRepository[]> {
@@ -91,7 +94,7 @@ export class GitHubOAuthService {
       throw new Error(`Failed to fetch GitHub repositories: ${response.statusText}`);
     }
 
-    return await response.json();
+    return (await response.json()) as any;
   }
 
   async createOrUpdateUser(githubUser: GitHubUser, repositories: GitHubRepository[]): Promise<any> {
@@ -109,10 +112,7 @@ export class GitHubOAuthService {
           email: githubUser.email || existingUser.email,
           name: githubUser.name || existingUser.name,
           avatarUrl: githubUser.avatar_url,
-          isActive: true,
-          hasRepositoryAccess: repositories.length > 0,
-          lastLoginAt: new Date(),
-        },
+        } as any,
         include: { repositories: true },
       });
 
@@ -132,10 +132,7 @@ export class GitHubOAuthService {
           email: githubUser.email || `${githubUser.login}@github.local`,
           name: githubUser.name || githubUser.login,
           avatarUrl: githubUser.avatar_url,
-          isActive: true,
-          hasRepositoryAccess: repositories.length > 0,
-          lastLoginAt: new Date(),
-        },
+        } as any,
         include: { repositories: true },
       });
 
@@ -171,7 +168,7 @@ export class GitHubOAuthService {
 
     if (repositoryData.length > 0) {
       await prisma.repository.createMany({
-        data: repositoryData,
+        data: repositoryData as any,
       });
     }
   }

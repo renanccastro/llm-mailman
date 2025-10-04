@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { ApiResponse, PaginatedResponse } from '@ai-dev/shared';
 
-export const requestRouter = Router();
+export const requestRouter: any = Router();
 
 // Get user's requests
 requestRouter.get('/', async (req, res) => {
@@ -24,7 +24,7 @@ requestRouter.get('/', async (req, res) => {
 // Get single request
 requestRouter.get('/:requestId', async (req, res) => {
   // TODO: Get request details
-  res.json<ApiResponse>({
+  res.json({
     success: false,
     message: 'Get request not yet implemented',
     timestamp: new Date().toISOString(),
@@ -34,7 +34,7 @@ requestRouter.get('/:requestId', async (req, res) => {
 // Create new request
 requestRouter.post('/', async (req, res) => {
   // TODO: Create new request
-  res.json<ApiResponse>({
+  res.json({
     success: false,
     message: 'Create request not yet implemented',
     timestamp: new Date().toISOString(),
@@ -44,7 +44,7 @@ requestRouter.post('/', async (req, res) => {
 // Confirm request
 requestRouter.post('/:requestId/confirm', async (req, res) => {
   // TODO: Confirm request execution
-  res.json<ApiResponse>({
+  res.json({
     success: false,
     message: 'Confirm request not yet implemented',
     timestamp: new Date().toISOString(),
@@ -54,7 +54,7 @@ requestRouter.post('/:requestId/confirm', async (req, res) => {
 // Cancel request
 requestRouter.post('/:requestId/cancel', async (req, res) => {
   // TODO: Cancel pending request
-  res.json<ApiResponse>({
+  res.json({
     success: false,
     message: 'Cancel request not yet implemented',
     timestamp: new Date().toISOString(),

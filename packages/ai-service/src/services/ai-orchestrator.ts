@@ -287,8 +287,8 @@ export class AIOrchestrator extends EventEmitter {
 
     const command = request.command.toLowerCase();
     return codeKeywords.some(keyword => command.includes(keyword)) ||
-           request.context?.repositoryName ||
-           request.context?.workingDirectory;
+           !!request.context?.repositoryName ||
+           !!request.context?.workingDirectory;
   }
 
   private async loadUserApiTokens(userId: string): Promise<void> {
@@ -346,7 +346,7 @@ export class AIOrchestrator extends EventEmitter {
     return results;
   }
 
-  private async executeCommand(userId: string, command: string, context: any): Promise<any> {
+  private async executeCommand(userId: string, command: string, _context: any): Promise<any> {
     // Get user's Claude Code sessions
     const userSessions = await this.claudeCodeService.listActiveSessions(userId);
 

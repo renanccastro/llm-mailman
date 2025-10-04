@@ -4,7 +4,7 @@ import { communicationService, aiOrchestrator } from '../services';
 import { executionQueue, notificationQueue } from '../queues';
 import { v4 as uuidv4 } from 'uuid';
 
-export const emailWebhookRouter = Router();
+export const emailWebhookRouter: any = Router();
 
 interface IncomingEmailWebhook {
   from: string;
@@ -30,6 +30,7 @@ emailWebhookRouter.post('/incoming', async (req, res) => {
 
     // Parse the incoming email
     const incomingMessage = {
+      id: emailData.messageId,
       messageId: emailData.messageId,
       from: emailData.from,
       to: emailData.to,
@@ -41,7 +42,7 @@ emailWebhookRouter.post('/incoming', async (req, res) => {
     };
 
     // Process the message to extract user and command
-    const messageResult = await communicationService.processIncomingMessage(incomingMessage);
+    const messageResult = await communicationService.processIncomingMessage(incomingMessage as any);
 
     if (!messageResult.shouldCreateRequest) {
       console.log('❌ Message does not contain valid request:', messageResult.error);
@@ -87,12 +88,8 @@ emailWebhookRouter.post('/incoming', async (req, res) => {
         channel: 'EMAIL',
         source: emailData.from,
         repositoryId: repositoryInfo.repository.id,
-        metadata: {
-          originalEmail: emailData,
-          extractedRepository: repositoryInfo.extractedName,
-        },
       },
-    });
+    } as any);
 
     console.log(`✅ Created request ${requestId} for repository ${repositoryInfo.repository.name}`);
 
@@ -105,11 +102,10 @@ emailWebhookRouter.post('/incoming', async (req, res) => {
         id: uuidv4(),
         requestId,
         token: confirmationToken,
-        method: 'EMAIL',
         contact: emailData.from,
         expiresAt,
       },
-    });
+    } as any);
 
     // Send confirmation email with repository context
     await communicationService.sendConfirmationEmail(

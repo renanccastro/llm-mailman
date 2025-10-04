@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import sgMail from '@sendgrid/mail';
 import { EventEmitter } from 'events';
-import { EmailMessage, EmailInboxConfig, IncomingMessage } from '../types';
+import { EmailMessage, EmailInboxConfig } from '../types';
 import { ServiceUnavailableError } from '@ai-dev/shared';
 import { prisma } from '@ai-dev/database';
 
@@ -34,7 +34,7 @@ export class EmailService extends EventEmitter {
         } : undefined,
       };
 
-      this.transporter = nodemailer.createTransporter(smtpConfig);
+      this.transporter = nodemailer.createTransport(smtpConfig);
       console.info('✅ SMTP transporter configured for email sending');
     }
 
@@ -95,7 +95,7 @@ export class EmailService extends EventEmitter {
       replyTo: message.replyTo,
     };
 
-    await sgMail.send(msg);
+    await sgMail.send(msg as any);
   }
 
   private async sendViaSMTP(message: EmailMessage): Promise<void> {

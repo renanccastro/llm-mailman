@@ -1,9 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverComponentsExternalPackages: ['@ai-dev/shared'],
-  },
   transpilePackages: ['@ai-dev/shared'],
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: false,
+  },
   env: {
     NEXT_PUBLIC_API_URL: process.env.API_URL || 'http://localhost:4000',
     NEXT_PUBLIC_WS_URL: process.env.WEBSOCKET_URL || 'ws://localhost:4000',

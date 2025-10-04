@@ -7,7 +7,7 @@ import { prisma } from '@ai-dev/database';
 
 export class WhatsAppService extends EventEmitter {
   private client?: Client;
-  private isReady: boolean = false;
+  private _isReady: boolean = false;
   private config: WhatsAppConfig;
   private userPhoneNumbers: Map<string, string> = new Map();
 
@@ -56,7 +56,7 @@ export class WhatsAppService extends EventEmitter {
 
     this.client.on('ready', () => {
       console.info('✅ WhatsApp client is ready!');
-      this.isReady = true;
+      this._isReady = true;
       this.emit('ready');
     });
 
@@ -72,7 +72,7 @@ export class WhatsAppService extends EventEmitter {
 
     this.client.on('disconnected', (reason) => {
       console.info('WhatsApp client disconnected:', reason);
-      this.isReady = false;
+      this._isReady = false;
       this.emit('disconnected', reason);
     });
 
@@ -114,7 +114,7 @@ export class WhatsAppService extends EventEmitter {
   }
 
   async sendMessage(message: WhatsAppMessage): Promise<boolean> {
-    if (!this.isReady || !this.client) {
+    if (!this._isReady || !this.client) {
       throw new ServiceUnavailableError('WhatsApp', 'Client not ready');
     }
 
@@ -288,6 +288,10 @@ Request ID: \`${requestId}\``;
     return null;
   }
 
+  async getUserFromWhatsAppNumber(phoneNumber: string): Promise<string | null> {
+    return this.getUserFromPhoneNumber(phoneNumber);
+  }
+
   private async parseIncomingMessage(message: Message): Promise<IncomingMessage | null> {
     // Skip messages from groups or broadcasts
     const chat = await message.getChat();
@@ -323,7 +327,7 @@ Request ID: \`${requestId}\``;
       content: message.body,
       attachments,
       timestamp: new Date(message.timestamp * 1000),
-      userId,
+      userId: userId || undefined,
       metadata: {
         messageType: message.type,
         hasQuotedMsg: message.hasQuotedMsg,
@@ -345,12 +349,12 @@ Request ID: \`${requestId}\``;
   }
 
   async isReady(): Promise<boolean> {
-    return this.isReady;
+    return this._isReady;
   }
 
   async getQRCode(): Promise<string | null> {
     return new Promise((resolve) => {
-      if (this.isReady) {
+      if (this._isReady) {
         resolve(null);
         return;
       }
@@ -374,13 +378,13 @@ Request ID: \`${requestId}\``;
   async destroy(): Promise<void> {
     if (this.client) {
       await this.client.destroy();
-      this.isReady = false;
+      this._isReady = false;
     }
   }
 
   async testConnection(): Promise<boolean> {
     try {
-      return this.isReady && this.client !== undefined;
+      return this._isReady && this.client !== undefined;
     } catch (error) {
       console.error('WhatsApp service connection test failed:', error);
       return false;

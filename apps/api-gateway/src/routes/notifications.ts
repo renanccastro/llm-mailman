@@ -4,13 +4,13 @@ import { authenticateToken, AuthenticatedRequest } from '../middleware/auth';
 import { PushNotificationService } from '../services/push-notification';
 import { prisma } from '@ai-dev/database';
 
-export const notificationRouter = Router();
+export const notificationRouter: any = Router();
 
 const pushService = new PushNotificationService();
 
 // Get VAPID public key for push subscription
 notificationRouter.get('/vapid-key', (req, res) => {
-  res.json<ApiResponse>({
+  res.json({
     success: true,
     data: {
       publicKey: process.env.VAPID_PUBLIC_KEY
@@ -30,7 +30,7 @@ notificationRouter.post('/subscribe', authenticateToken, async (req: Authenticat
       deviceName
     });
 
-    res.json<ApiResponse>({
+    res.json({
       success: true,
       message: 'Successfully subscribed to push notifications',
       timestamp: new Date().toISOString(),
@@ -38,7 +38,7 @@ notificationRouter.post('/subscribe', authenticateToken, async (req: Authenticat
 
   } catch (error) {
     console.error('Push subscription error:', error);
-    res.status(500).json<ApiResponse>({
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to subscribe to push notifications',
       timestamp: new Date().toISOString(),
@@ -56,7 +56,7 @@ notificationRouter.post('/unsubscribe', authenticateToken, async (req: Authentic
       data: { isActive: false }
     });
 
-    res.json<ApiResponse>({
+    res.json({
       success: true,
       message: 'Successfully unsubscribed from push notifications',
       timestamp: new Date().toISOString(),
@@ -64,7 +64,7 @@ notificationRouter.post('/unsubscribe', authenticateToken, async (req: Authentic
 
   } catch (error) {
     console.error('Push unsubscription error:', error);
-    res.status(500).json<ApiResponse>({
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to unsubscribe from push notifications',
       timestamp: new Date().toISOString(),
@@ -80,7 +80,7 @@ notificationRouter.post('/test', authenticateToken, async (req: AuthenticatedReq
     const testRequestId = `test-${Date.now()}`;
     const sent = await pushService.sendTestNotification(userId, testRequestId);
 
-    res.json<ApiResponse>({
+    res.json({
       success: true,
       data: {
         sent,
@@ -93,7 +93,7 @@ notificationRouter.post('/test', authenticateToken, async (req: AuthenticatedReq
 
   } catch (error) {
     console.error('Test notification error:', error);
-    res.status(500).json<ApiResponse>({
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to send test notification',
       timestamp: new Date().toISOString(),
@@ -114,7 +114,7 @@ notificationRouter.get('/settings', authenticateToken, async (req: Authenticated
       where: { userId }
     });
 
-    res.json<ApiResponse>({
+    res.json({
       success: true,
       data: {
         pushEnabled: activeSubscriptions > 0,
@@ -128,7 +128,7 @@ notificationRouter.get('/settings', authenticateToken, async (req: Authenticated
 
   } catch (error) {
     console.error('Get notification settings error:', error);
-    res.status(500).json<ApiResponse>({
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to get notification settings',
       timestamp: new Date().toISOString(),
@@ -158,7 +158,7 @@ notificationRouter.patch('/settings', authenticateToken, async (req: Authenticat
       }
     });
 
-    res.json<ApiResponse>({
+    res.json({
       success: true,
       message: 'Notification settings updated successfully',
       timestamp: new Date().toISOString(),
@@ -166,7 +166,7 @@ notificationRouter.patch('/settings', authenticateToken, async (req: Authenticat
 
   } catch (error) {
     console.error('Update notification settings error:', error);
-    res.status(500).json<ApiResponse>({
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to update notification settings',
       timestamp: new Date().toISOString(),

@@ -1,4 +1,4 @@
-import { IncomingMessage, ParsedCommand, MessageAttachment } from '../types';
+import { IncomingMessage, ParsedCommand } from '../types';
 
 export class MessageParser {
   private commandPatterns = {
@@ -216,7 +216,7 @@ export class MessageParser {
   private calculateConfidence(
     originalText: string,
     repositoryName?: string,
-    cleanCommand?: string
+    _cleanCommand?: string
   ): number {
     let confidence = 0.5; // Base confidence
 

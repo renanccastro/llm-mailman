@@ -29,7 +29,7 @@ export interface CommunicationConfig {
 export class CommunicationService extends EventEmitter {
   private emailService: EmailService;
   private whatsAppService: WhatsAppService;
-  private notificationService: NotificationService;
+  private _notificationService: NotificationService;
   private messageParser: MessageParser;
   private attachmentHandler: AttachmentHandler;
   private config: CommunicationConfig;
@@ -41,7 +41,7 @@ export class CommunicationService extends EventEmitter {
     // Initialize services
     this.emailService = new EmailService();
     this.whatsAppService = new WhatsAppService();
-    this.notificationService = new NotificationService();
+    this._notificationService = new NotificationService();
     this.messageParser = new MessageParser();
     this.attachmentHandler = new AttachmentHandler();
 
@@ -152,24 +152,25 @@ export class CommunicationService extends EventEmitter {
   // Generic notification method
   async sendNotification(notification: NotificationMessage): Promise<boolean> {
     try {
+      const data = notification.data || {};
       switch (notification.channel) {
         case 'EMAIL':
           if (notification.type === 'confirmation') {
             return await this.sendConfirmationEmail(
-              notification.data.to,
-              notification.data.requestId,
-              notification.data.command,
-              notification.data.token,
-              notification.data.expiresAt
+              data.to,
+              data.requestId,
+              data.command,
+              data.token,
+              data.expiresAt
             );
           } else if (notification.type === 'completion') {
             return await this.sendExecutionNotification(
-              notification.data.to,
-              notification.data.requestId,
-              notification.data.command,
-              notification.data.success,
-              notification.data.output,
-              notification.data.error
+              data.to,
+              data.requestId,
+              data.command,
+              data.success,
+              data.output,
+              data.error
             );
           }
           break;
@@ -177,20 +178,20 @@ export class CommunicationService extends EventEmitter {
         case 'WHATSAPP':
           if (notification.type === 'confirmation') {
             return await this.sendWhatsAppConfirmation(
-              notification.data.to,
-              notification.data.requestId,
-              notification.data.command,
-              notification.data.token,
-              notification.data.expiresAt
+              data.to,
+              data.requestId,
+              data.command,
+              data.token,
+              data.expiresAt
             );
           } else if (notification.type === 'completion') {
             return await this.sendWhatsAppNotification(
-              notification.data.to,
-              notification.data.requestId,
-              notification.data.command,
-              notification.data.success,
-              notification.data.output,
-              notification.data.error
+              data.to,
+              data.requestId,
+              data.command,
+              data.success,
+              data.output,
+              data.error
             );
           }
           break;
@@ -229,7 +230,7 @@ export class CommunicationService extends EventEmitter {
       // Process attachments if any
       let attachments: any[] = [];
       if (message.attachments && message.attachments.length > 0) {
-        attachments = await this.attachmentHandler.processAttachments(message.attachments);
+        attachments = await this.attachmentHandler.processAttachments(message);
       }
 
       return {
@@ -350,7 +351,10 @@ export class CommunicationService extends EventEmitter {
         } else if (recipient.channel === 'WHATSAPP') {
           result = await this.sendWhatsApp({
             to: recipient.userId,
-            content: message.content,
+            type: 'text',
+            content: {
+              text: message.content,
+            },
           });
           sent++;
         }

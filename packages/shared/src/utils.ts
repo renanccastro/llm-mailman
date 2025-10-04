@@ -96,3 +96,29 @@ export function truncateString(str: string, maxLength: number): string {
   if (str.length <= maxLength) return str;
   return str.slice(0, maxLength - 3) + '...';
 }
+
+export class Logger {
+  constructor(private context: string) {}
+
+  log(message: string, ...args: any[]): void {
+    console.log(`[${this.context}]`, message, ...args);
+  }
+
+  info(message: string, ...args: any[]): void {
+    console.info(`[${this.context}]`, message, ...args);
+  }
+
+  error(message: string, ...args: any[]): void {
+    console.error(`[${this.context}]`, message, ...args);
+  }
+
+  warn(message: string, ...args: any[]): void {
+    console.warn(`[${this.context}]`, message, ...args);
+  }
+
+  debug(message: string, ...args: any[]): void {
+    if (process.env.LOG_LEVEL === 'debug') {
+      console.debug(`[${this.context}]`, message, ...args);
+    }
+  }
+}

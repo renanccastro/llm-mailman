@@ -241,7 +241,7 @@ export class DockerService extends EventEmitter {
     try {
       const container = this.getContainer(options.containerId);
 
-      return await container.logs({
+      const logs = await (container.logs as any)({
         follow: options.follow || false,
         stdout: true,
         stderr: true,
@@ -250,6 +250,8 @@ export class DockerService extends EventEmitter {
         until: options.until ? Math.floor(options.until.getTime() / 1000) : undefined,
         timestamps: options.timestamps || false,
       });
+
+      return logs as NodeJS.ReadableStream;
     } catch (error) {
       throw new NotFoundError('Container', options.containerId);
     }

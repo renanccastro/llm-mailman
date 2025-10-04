@@ -1,24 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { AuthenticationError, AuthorizationError } from '@ai-dev/shared';
 import { AuthService } from '../services/auth-service';
-import { User } from '@ai-dev/database';
-
-declare global {
-  namespace Express {
-    interface Request {
-      user?: User;
-      session?: {
-        id: string;
-        userId: string;
-        token: string;
-      };
-    }
-  }
-}
+import { UserRole } from '@ai-dev/database';
 
 export async function authenticate(
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ): Promise<void> {
   try {
@@ -48,14 +35,15 @@ export async function authenticate(
   }
 }
 
-export function authorize(...roles: string[]) {
-  return (req: Request, res: Response, next: NextFunction): void => {
+export function authorize(...roles: UserRole[]) {
+  return (req: Request, _res: Response, next: NextFunction): void => {
     if (!req.user) {
       next(new AuthenticationError('Authentication required'));
       return;
     }
 
-    if (roles.length > 0 && !roles.includes(req.user.role)) {
+    const user = req.user as any;
+    if (roles.length > 0 && !roles.includes(user.role)) {
       next(new AuthorizationError('Insufficient permissions'));
       return;
     }
@@ -66,7 +54,7 @@ export function authorize(...roles: string[]) {
 
 export async function optionalAuth(
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ): Promise<void> {
   try {

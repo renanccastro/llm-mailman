@@ -19,7 +19,7 @@ export function initializeGitHubOAuth(): void {
       },
       async (
         accessToken: string,
-        refreshToken: string,
+        _refreshToken: string,
         profile: any,
         done: (error: any, user?: any) => void,
       ) => {

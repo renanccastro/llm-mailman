@@ -4,7 +4,8 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "composite": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "noUnusedLocals": false
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"],

@@ -13,7 +13,7 @@ import { ServiceUnavailableError, NotFoundError } from '@ai-dev/shared';
 export class KubernetesService extends EventEmitter {
   private kc: k8s.KubeConfig;
   private k8sApi: k8s.CoreV1Api;
-  private k8sAppsApi: k8s.AppsV1Api;
+  private _k8sAppsApi: k8s.AppsV1Api;
   private k8sMetricsApi: k8s.Metrics;
   private namespace: string;
 
@@ -30,7 +30,7 @@ export class KubernetesService extends EventEmitter {
     }
 
     this.k8sApi = this.kc.makeApiClient(k8s.CoreV1Api);
-    this.k8sAppsApi = this.kc.makeApiClient(k8s.AppsV1Api);
+    this._k8sAppsApi = this.kc.makeApiClient(k8s.AppsV1Api);
     this.k8sMetricsApi = new k8s.Metrics(this.kc);
   }
 
@@ -240,7 +240,7 @@ export class KubernetesService extends EventEmitter {
         process.stderr,
         process.stdin,
         options.tty || false,
-        (status) => {
+        (_status) => {
           // Command finished
         }
       );

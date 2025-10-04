@@ -129,13 +129,13 @@ export async function setupQueues(): Promise<void> {
       const { requestId, userId, command, repositoryId, repositoryName, repositoryUrl, branch } = job.data;
 
       // Extract thread ID from request or generate one
-      const request = await prisma.request.findUnique({
+      const requestData = await prisma.request.findUnique({
         where: { id: requestId },
         include: { user: true }
       });
 
-      const threadId = request?.source ?
-        `${request.source}-${repositoryName || 'default'}` :
+      const threadId = requestData?.source ?
+        `${requestData.source}-${repositoryName || 'default'}` :
         `thread-${userId}-${Date.now()}`;
 
       console.log(`🔄 Getting or creating container for thread ${threadId}...`);
@@ -213,18 +213,18 @@ export async function setupQueues(): Promise<void> {
       });
 
       // Send completion notification
-      const request = await prisma.request.findUnique({
+      const requestRecord = await prisma.request.findUnique({
         where: { id: requestId },
         include: { user: true, repository: true }
       });
 
-      if (request) {
+      if (requestRecord) {
         await notificationQueue.add('completion', {
           userId,
           type: 'completion',
           channel: 'EMAIL',
           data: {
-            to: request.source,
+            to: requestRecord.source,
             requestId,
             command,
             success: result.success,
@@ -276,7 +276,7 @@ export async function setupQueues(): Promise<void> {
           type,
           channel: 'EMAIL',
           data,
-        });
+        } as any);
       }
 
       if (channel === 'WHATSAPP' || channel === 'BOTH') {
@@ -285,7 +285,7 @@ export async function setupQueues(): Promise<void> {
           type,
           channel: 'WHATSAPP',
           data,
-        });
+        } as any);
       }
 
       return { notified: true, result };

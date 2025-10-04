@@ -1,12 +1,12 @@
 import { Router } from 'express';
 import { ApiResponse } from '@ai-dev/shared';
 
-export const containerRouter = Router();
+export const containerRouter: any = Router();
 
 // Get container status
 containerRouter.get('/status', async (req, res) => {
   // TODO: Get user's container status
-  res.json<ApiResponse>({
+  res.json({
     success: false,
     message: 'Get container status not yet implemented',
     timestamp: new Date().toISOString(),
@@ -16,7 +16,7 @@ containerRouter.get('/status', async (req, res) => {
 // Start container
 containerRouter.post('/start', async (req, res) => {
   // TODO: Start user's container
-  res.json<ApiResponse>({
+  res.json({
     success: false,
     message: 'Start container not yet implemented',
     timestamp: new Date().toISOString(),
@@ -26,7 +26,7 @@ containerRouter.post('/start', async (req, res) => {
 // Stop container
 containerRouter.post('/stop', async (req, res) => {
   // TODO: Stop user's container
-  res.json<ApiResponse>({
+  res.json({
     success: false,
     message: 'Stop container not yet implemented',
     timestamp: new Date().toISOString(),
@@ -36,7 +36,7 @@ containerRouter.post('/stop', async (req, res) => {
 // Restart container
 containerRouter.post('/restart', async (req, res) => {
   // TODO: Restart user's container
-  res.json<ApiResponse>({
+  res.json({
     success: false,
     message: 'Restart container not yet implemented',
     timestamp: new Date().toISOString(),
@@ -46,7 +46,7 @@ containerRouter.post('/restart', async (req, res) => {
 // Get container logs
 containerRouter.get('/logs', async (req, res) => {
   // TODO: Stream container logs
-  res.json<ApiResponse>({
+  res.json({
     success: false,
     message: 'Get container logs not yet implemented',
     timestamp: new Date().toISOString(),
@@ -56,7 +56,7 @@ containerRouter.get('/logs', async (req, res) => {
 // Update container configuration
 containerRouter.patch('/config', async (req, res) => {
   // TODO: Update container resource limits
-  res.json<ApiResponse>({
+  res.json({
     success: false,
     message: 'Update container config not yet implemented',
     timestamp: new Date().toISOString(),

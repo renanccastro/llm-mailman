@@ -4,7 +4,7 @@ import { authenticateToken, AuthenticatedRequest } from '../middleware/auth';
 import { prisma } from '@ai-dev/database';
 import { GitHubOAuthService } from '../services/github-oauth';
 
-export const repositoryRouter = Router();
+export const repositoryRouter: any = Router();
 
 const githubOAuth = new GitHubOAuthService();
 
@@ -21,7 +21,7 @@ repositoryRouter.get('/', authenticateToken, async (req: AuthenticatedRequest, r
         where: { userId },
         skip,
         take: limit,
-        orderBy: { lastActivity: 'desc' },
+        orderBy: { createdAt: 'desc' } as any,
       }),
       prisma.repository.count({
         where: { userId },
@@ -43,7 +43,7 @@ repositoryRouter.get('/', authenticateToken, async (req: AuthenticatedRequest, r
     res.json(response);
   } catch (error) {
     console.error('Get repositories error:', error);
-    res.status(500).json<ApiResponse>({
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to get repositories',
       timestamp: new Date().toISOString(),
@@ -58,14 +58,14 @@ repositoryRouter.post('/refresh', authenticateToken, async (req: AuthenticatedRe
     // For now, we'll return a success message indicating repositories were refreshed
     // In a production environment, you'd need to store and refresh OAuth tokens
 
-    res.json<ApiResponse>({
+    res.json({
       success: true,
       message: 'Repository refresh initiated. Please re-authenticate if needed.',
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
     console.error('Refresh repositories error:', error);
-    res.status(500).json<ApiResponse>({
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to refresh repositories',
       timestamp: new Date().toISOString(),
@@ -76,7 +76,7 @@ repositoryRouter.post('/refresh', authenticateToken, async (req: AuthenticatedRe
 // Update repository permissions
 repositoryRouter.patch('/:repositoryId/permissions', async (req, res) => {
   // TODO: Update repository permissions
-  res.json<ApiResponse>({
+  res.json({
     success: false,
     message: 'Update permissions not yet implemented',
     timestamp: new Date().toISOString(),
@@ -86,7 +86,7 @@ repositoryRouter.patch('/:repositoryId/permissions', async (req, res) => {
 // Remove repository
 repositoryRouter.delete('/:repositoryId', async (req, res) => {
   // TODO: Remove repository from user's list
-  res.json<ApiResponse>({
+  res.json({
     success: false,
     message: 'Remove repository not yet implemented',
     timestamp: new Date().toISOString(),

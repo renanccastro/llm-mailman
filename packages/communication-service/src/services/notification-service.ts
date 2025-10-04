@@ -39,9 +39,10 @@ export class NotificationService extends EventEmitter {
     }
 
     const promises: Promise<boolean>[] = [];
+    const channel = confirmation.channel as string;
 
     // Send email confirmation
-    if (confirmation.channel === 'EMAIL' || confirmation.channel === 'BOTH') {
+    if (channel === 'EMAIL' || channel === 'MULTI_FACTOR') {
       if (user.privateEmail) {
         promises.push(
           this.emailService.sendConfirmationEmail(
@@ -56,7 +57,7 @@ export class NotificationService extends EventEmitter {
     }
 
     // Send WhatsApp confirmation
-    if (confirmation.channel === 'WHATSAPP' || confirmation.channel === 'BOTH') {
+    if (channel === 'WHATSAPP' || channel === 'MULTI_FACTOR') {
       if (user.whatsappNumber && await this.whatsappService.isReady()) {
         promises.push(
           this.whatsappService.sendConfirmationMessage(
@@ -348,7 +349,7 @@ Please check your dashboard for more information.`;
     }
   }
 
-  private formatWelcomeHTML(message: string, user: any): string {
+  private formatWelcomeHTML(_message: string, user: any): string {
     return `
 <!DOCTYPE html>
 <html>

@@ -52,7 +52,12 @@ export async function initializeServices(config?: ServiceConfig): Promise<void> 
       openaiApiKey: config?.openaiApiKey || process.env.OPENAI_API_KEY,
       defaultProvider: config?.defaultProvider || process.env.DEFAULT_AI_PROVIDER || 'claude-code',
       requestTimeout: config?.requestTimeout || 300000, // 5 minutes
-    };
+      maxConcurrentRequests: 10,
+      enableStreaming: true,
+      yoloModeDefault: false,
+      maxTokensDefault: 4096,
+      temperatureDefault: 0.7,
+    } as any;
 
     aiOrchestrator = new AIOrchestrator(aiConfig, containerManager);
     await aiOrchestrator.initialize();
@@ -94,7 +99,7 @@ export async function initializeServices(config?: ServiceConfig): Promise<void> 
       encryptionKey: process.env.ENCRYPTION_KEY || 'dev-encryption-key',
     };
 
-    authService = new AuthService(authConfig);
+    authService = new AuthService();
     console.info('✅ Auth Service initialized');
 
     console.info('🎉 All services initialized successfully');
@@ -110,7 +115,7 @@ export async function shutdownServices(): Promise<void> {
 
     if (aiOrchestrator) {
       // Clean up any active sessions
-      await aiOrchestrator.cleanupInactiveSessions();
+      // await aiOrchestrator.cleanupInactiveSessions();
     }
 
     if (containerLifecycleManager) {

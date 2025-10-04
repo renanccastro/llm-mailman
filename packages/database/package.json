@@ -13,6 +13,9 @@
     "migrate:deploy": "prisma migrate deploy",
     "migrate:reset": "prisma migrate reset",
     "studio": "prisma studio",
+    "studio:dev": "DATABASE_URL=\"postgresql://aidev:aidev_secret_2025@localhost:5432/aidev_platform\" prisma studio",
+    "db:push": "DATABASE_URL=\"postgresql://aidev:aidev_secret_2025@localhost:5432/aidev_platform\" prisma db push",
+    "db:seed": "DATABASE_URL=\"postgresql://aidev:aidev_secret_2025@localhost:5432/aidev_platform\" tsx src/seed.ts",
     "seed": "tsx src/seed.ts",
     "typecheck": "tsc --noEmit"
   },

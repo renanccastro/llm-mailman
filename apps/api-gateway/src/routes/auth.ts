@@ -3,7 +3,7 @@ import { ApiResponse } from '@ai-dev/shared';
 import { GitHubOAuthService } from '../services/github-oauth';
 import { authenticateToken } from '../middleware/auth';
 
-export const authRouter = Router();
+export const authRouter: any = Router();
 
 const githubOAuth = new GitHubOAuthService();
 
@@ -13,7 +13,7 @@ authRouter.post('/github/callback', async (req, res) => {
     const { code, state } = req.body;
 
     if (!code) {
-      return res.status(400).json<ApiResponse>({
+      return res.status(400).json({
         success: false,
         error: 'Authorization code is required',
         timestamp: new Date().toISOString(),
@@ -35,7 +35,7 @@ authRouter.post('/github/callback', async (req, res) => {
     // Generate JWT token
     const token = githubOAuth.generateJWT(user);
 
-    res.json<ApiResponse>({
+    res.json({
       success: true,
       message: 'Authentication successful',
       data: {
@@ -56,7 +56,7 @@ authRouter.post('/github/callback', async (req, res) => {
     });
   } catch (error) {
     console.error('GitHub OAuth callback error:', error);
-    res.status(500).json<ApiResponse>({
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Authentication failed',
       timestamp: new Date().toISOString(),
@@ -69,7 +69,7 @@ authRouter.get('/me', authenticateToken, async (req, res) => {
   try {
     const user = (req as any).user;
 
-    res.json<ApiResponse>({
+    res.json({
       success: true,
       data: {
         user: {
@@ -83,7 +83,7 @@ authRouter.get('/me', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     console.error('Get user info error:', error);
-    res.status(500).json<ApiResponse>({
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to get user info',
       timestamp: new Date().toISOString(),
@@ -94,7 +94,7 @@ authRouter.get('/me', authenticateToken, async (req, res) => {
 // Logout
 authRouter.post('/logout', async (req, res) => {
   // TODO: Implement logout
-  res.json<ApiResponse>({
+  res.json({
     success: true,
     message: 'Logged out successfully',
     timestamp: new Date().toISOString(),
@@ -104,7 +104,7 @@ authRouter.post('/logout', async (req, res) => {
 // Refresh token
 authRouter.post('/refresh', async (req, res) => {
   // TODO: Implement token refresh
-  res.json<ApiResponse>({
+  res.json({
     success: false,
     message: 'Token refresh not yet implemented',
     timestamp: new Date().toISOString(),

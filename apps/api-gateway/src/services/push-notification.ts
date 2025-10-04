@@ -145,7 +145,7 @@ export class PushNotificationService {
             endpoint: subscription.endpoint,
             keys: {
               p256dh: subscription.p256dh,
-              auth: subscription.keys.auth
+              auth: subscription.auth
             }
           },
           JSON.stringify(payload)
