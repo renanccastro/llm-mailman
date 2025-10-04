@@ -24,6 +24,8 @@ export const redisSession = new Redis(redisUrl, {
 
 export const redisQueue = new Redis(redisUrl, {
   db: 2, // Use different database for job queues
+  maxRetriesPerRequest: null, // Required for Bull queue
+  enableReadyCheck: false, // Required for Bull queue
 });
 
 export async function connectRedis(): Promise<void> {

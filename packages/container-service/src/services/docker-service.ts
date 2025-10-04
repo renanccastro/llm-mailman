@@ -17,9 +17,9 @@ export class DockerService extends EventEmitter {
 
   constructor() {
     super();
+    const dockerSocket = process.env.DOCKER_SOCKET || process.env.DOCKER_HOST || '/var/run/docker.sock';
     this.docker = new Docker({
-      host: process.env.DOCKER_HOST || '/var/run/docker.sock',
-      port: process.env.DOCKER_PORT ? parseInt(process.env.DOCKER_PORT) : undefined,
+      socketPath: dockerSocket,
     });
 
     this.setupEventListener();
